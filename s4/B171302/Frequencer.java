@@ -64,9 +64,9 @@ public class Frequencer implements FrequencerInterface{
 		
     	for (int k = 0; k < mySpace.length; k++) {
     		if (suffixArray[i] + k >= mySpace.length) return 0;
-    		else if (suffixArray[j] + k >= mySpace.length) return 0;
+    		if (suffixArray[j] + k >= mySpace.length) return 0;
 	    	if (mySpace[suffixArray[i] + k] > mySpace[suffixArray[j] + k]) return 1;
-	    	else if (mySpace[suffixArray[i] + k] < mySpace[suffixArray[j] + k]) return -1; 
+	    	if (mySpace[suffixArray[i] + k] < mySpace[suffixArray[j] + k]) return -1; 
     	}
         return 0;
     }
@@ -83,7 +83,8 @@ public class Frequencer implements FrequencerInterface{
             suffixArray[i] = i; // Please note that each suffix is expressed by one integer.      
         }
         //                                            
-    	
+		
+		/*
     	int t;
     	for (int i = 0; i < suffixArray.length - 1; i++) {
     		for (int j = i + 1; j < suffixArray.length; j++) {
@@ -94,9 +95,81 @@ public class Frequencer implements FrequencerInterface{
     				suffixArray[j] = t;
     			}
     		}
-    	}
-    	
+		}
+		*/
+
+		//quickSort(suffixArray, 0, suffixArray.length - 1);
+		sort(suffixArray);	// heap sort
+
+		//printSuffixArray();
+	}
+	
+	void sort(int[] array) {
+        int n = array.length;
+
+        for (int i = n /2 -1; i>=0; i--){
+            heap(array, n, i);
+        }
+
+        for (int i = n-1 ; i>=0; i --){
+            if (suffixCompare(0, i) == 1) {
+                int tmp = array[0];
+                array[0] = array[i];
+                array[i] = tmp;
+
+                heap(array, i-1, 0);
+            }
+
+        }
     }
+
+    void heap(int[] array, int n , int root){
+        int largest = root;
+        int left = 2 * root + 1;
+        int right = 2 * root + 2;
+
+        if (left < n && (suffixCompare(left, largest) == 1)){
+            largest = left;
+        }
+
+        if (right < n && (suffixCompare(right, largest) == 1)){
+            largest = right;
+        }
+
+        if (largest != root){
+            int swap = array[root];
+            array[root] = array[largest];
+            array[largest] = swap;
+
+            heap(array, n ,largest);
+        }
+    }
+	/*
+	void quickSort(int[] array, int left, int right){
+		int index = partition(array, left, right);
+		if(left < index - 1){
+			quickSort(array, left, index - 1);
+		}
+		if(index < right){
+			quickSort(array, index, right);
+		}
+	}
+	int partition(int[] array, int left, int right){
+		int pivot = (left + right) / 2;
+		while (left < right) {
+			while (suffixCompare(left, pivot) == -1) left++;
+			while (suffixCompare(right, pivot) == 1) right--;
+			if (left <= right){
+				int tmp = array[left];
+				array[left] = array[right];
+				array[right] = tmp;
+				left++;
+				right--;
+			}
+		}
+		return left;
+	}
+*/
 
     public void setTarget(byte [] target) {
         myTarget = target; if(myTarget.length>0) targetReady = true;
@@ -148,9 +221,13 @@ public class Frequencer implements FrequencerInterface{
         // "Ho"      =     "Ho"
         // "Ho"      <     "Ho "   : "Ho " is not in the head of suffix "Ho"
         // "Ho"      =     "H"     : "H" is in the head of suffix "Ho"
-    	
-    	if (mySpace[suffixArray[i] + j] > myTarget[k]) return 1;
-    	else if (mySpace[suffixArray[i] + j] < myTarget[k]) return -1;
+	
+		for (int n = 0; n < k - j; n++) {
+			if (suffixArray[i] + n >= mySpace.length) return -1;
+			if (j + n >= myTarget.length) return 1;
+			if (mySpace[suffixArray[i] + n] > myTarget[j + n]) return 1;
+			if (mySpace[suffixArray[i] + n] < myTarget[j + n]) return -1;
+		}
         return 0;
     }
 
@@ -178,13 +255,9 @@ public class Frequencer implements FrequencerInterface{
         // if target_start_end is "Ho ", it will return 6.                                               
     	
     	for (int i = 0; i < suffixArray.length; i++) {
-    			boolean success = true;
-    			for (int k = 0; k < myTarget.length; k++) {
-    				if (targetCompare(i, k, k) != 0 || k >= mySpace.length - suffixArray[i] - 1) {
-    					success = false; break;
-    				}
-    			}
-    			if (success) return i;
+    		if (targetCompare(i, start, end) == 0) {
+				return i;
+			}
     	}
     	
         return mySpace.length;         
@@ -212,15 +285,10 @@ public class Frequencer implements FrequencerInterface{
         // if target_start_end is"i", it will return 9 for "Hi Ho Hi Ho".    
                                                       
         for (int i = suffixArray.length - 1; i >= 0; i--) {
-    			boolean success = true;
-    			for (int k = 0; k < myTarget.length; k++) {
-    				if (targetCompare(i, k, k) != 0 || k >= mySpace.length - suffixArray[i] - 1) {
-    					success = false; break;
-    				}
-    			}
-    			if (success) return i + 1;
+  			if (targetCompare(i, start, end) == 0) {
+				return i + 1;
+			}
     	}
-    	
         return mySpace.length;    
     }
 
