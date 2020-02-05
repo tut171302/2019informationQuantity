@@ -1,6 +1,5 @@
 package s4.B171302;
-import java.lang.*;
-import s4.specification.*;
+import s4.specification.FrequencerInterface;
 
 
 /*package s4.specification;
@@ -28,11 +27,11 @@ public class Frequencer implements FrequencerInterface{
     int []  suffixArray; // Suffix Array int[]
 
 
-    // The variable, "suffixArray" is the sorted array of all suffixes of mySpace.                                    
-    // Each suffix is expressed by a integer, which is the starting position in mySpace. 
-                            
+    // The variable, "suffixArray" is the sorted array of all suffixes of mySpace.
+    // Each suffix is expressed by a integer, which is the starting position in mySpace.
+
     // The following is the code to print the contents of suffixArray.
-    // This code could be used on debugging.                                                                
+    // This code could be used on debugging.
 
     private void printSuffixArray() {
         if(spaceReady) {
@@ -51,39 +50,39 @@ public class Frequencer implements FrequencerInterface{
         // Define as follow.
         // comparing two suffixes by dictionary order.
         // suffix_i is a string starting with the position i in "byte [] mySpace".
-        // Each i and j denote suffix_i, and suffix_j.                            
-        // Example of dictionary order                                            
-        // "i"      <  "o"        : compare by code                              
-        // "Hi"     <  "Ho"       ; if head is same, compare the next element    
-        // "Ho"     <  "Ho "      ; if the prefix is identical, longer string is big  
-        //  
-        //The return value of "int suffixCompare" is as follows. 
-        // if suffix_i > suffix_j, it returns 1   
-        // if suffix_i < suffix_j, it returns -1  
-        // if suffix_i = suffix_j, it returns 0;   
-		
+        // Each i and j denote suffix_i, and suffix_j.
+        // Example of dictionary order
+        // "i"      <  "o"        : compare by code
+        // "Hi"     <  "Ho"       ; if head is same, compare the next element
+        // "Ho"     <  "Ho "      ; if the prefix is identical, longer string is big
+        //
+        //The return value of "int suffixCompare" is as follows.
+        // if suffix_i > suffix_j, it returns 1
+        // if suffix_i < suffix_j, it returns -1
+        // if suffix_i = suffix_j, it returns 0;
+
     	for (int k = 0; k < mySpace.length; k++) {
-    		if (suffixArray[i] + k >= mySpace.length) return 0;
-    		if (suffixArray[j] + k >= mySpace.length) return 0;
+    		if (suffixArray[i] + k >= mySpace.length) return -1;
+    		if (suffixArray[j] + k >= mySpace.length) return 1;
 	    	if (mySpace[suffixArray[i] + k] > mySpace[suffixArray[j] + k]) return 1;
-	    	if (mySpace[suffixArray[i] + k] < mySpace[suffixArray[j] + k]) return -1; 
+	    	if (mySpace[suffixArray[i] + k] < mySpace[suffixArray[j] + k]) return -1;
     	}
         return 0;
     }
 
-    public void setSpace(byte []space) { 
+    public void setSpace(byte []space) {
         // suffixArray preprocess define in setSpace.
         mySpace = space; if(mySpace.length>0) spaceReady = true;
-    	
+
         // First, create unsorted suffix array.
         suffixArray = new int[space.length];
-    	
+
         // put all suffixes in suffixArray.
         for(int i = 0; i< space.length; i++) {
-            suffixArray[i] = i; // Please note that each suffix is expressed by one integer.      
+            suffixArray[i] = i; // Please note that each suffix is expressed by one integer.
         }
-        //                                            
-		
+        //
+
 		/*
     	int t;
     	for (int i = 0; i < suffixArray.length - 1; i++) {
@@ -103,15 +102,15 @@ public class Frequencer implements FrequencerInterface{
 
 		//printSuffixArray();
 	}
-	
-	void sort(int[] array) {
+
+	private void sort(int[] array) {
         int n = array.length;
 
-        for (int i = n /2 -1; i>=0; i--){
+        for (int i = n / 2 -1; i >= 0; i--){
             heap(array, n, i);
         }
 
-        for (int i = n-1 ; i>=0; i --){
+        for (int i = n - 1 ; i >= 0; i--){
             if (suffixCompare(0, i) == 1) {
                 int tmp = array[0];
                 array[0] = array[i];
@@ -123,7 +122,7 @@ public class Frequencer implements FrequencerInterface{
         }
     }
 
-    void heap(int[] array, int n , int root){
+    private void heap(int[] array, int n , int root){
         int largest = root;
         int left = 2 * root + 1;
         int right = 2 * root + 2;
@@ -144,6 +143,7 @@ public class Frequencer implements FrequencerInterface{
             heap(array, n ,largest);
         }
     }
+
 	/*
 	void quickSort(int[] array, int left, int right){
 		int index = partition(array, left, right);
@@ -185,16 +185,19 @@ public class Frequencer implements FrequencerInterface{
 
     public int subByteFrequency(int start, int end) {
         /* This method be work as follows, but much more efficient
-           int spaceLength = mySpace.length;                      
-           int count = 0;                                        
+           int spaceLength = mySpace.length;
+           int count = 0;
            for(int offset = 0; offset< spaceLength - (end - start); offset++) {
-            boolean abort = false; 
+            boolean abort = false;
             for(int i = 0; i< (end - start); i++) {
              if(myTarget[start+i] != mySpace[offset+i]) { abort = true; break; }
             }
             if(abort == false) { count++; }
            }
         */
+
+    	//for (int i = 0; i < suffixArray.length; i++) { System.out.println("i=" + i + " : " + targetCompare(i, start, end)); };
+
         int first = subByteStartIndex(start, end);
         int last1 = subByteEndIndex(start, end);
     	//System.out.println("first : " + first + ", last1 : " + last1);
@@ -207,10 +210,10 @@ public class Frequencer implements FrequencerInterface{
         // comparing suffix_i and target_j_k.
         // if the beginning of suffix_i matches target_i_k, it return 0.
         // The behavior is different from suffixCompare on this case.
-        // if suffix_i > target_i_k it return 1; 
+        // if suffix_i > target_i_k it return 1;
         // if suffix_i < target_i_k it return -1;
         // It should be used to search the appropriate index of some suffix.
-        // Example of search 
+        // Example of search
         // suffix          target
         // "o"       >     "i"
         // "o"       <     "z"
@@ -221,7 +224,9 @@ public class Frequencer implements FrequencerInterface{
         // "Ho"      =     "Ho"
         // "Ho"      <     "Ho "   : "Ho " is not in the head of suffix "Ho"
         // "Ho"      =     "H"     : "H" is in the head of suffix "Ho"
-	
+
+    	//System.out.println("Compared : " + i + " & " + j + "~" + k);
+
 		for (int n = 0; n < k - j; n++) {
 			if (suffixArray[i] + n >= mySpace.length) return -1;
 			if (j + n >= myTarget.length) return 1;
@@ -247,74 +252,124 @@ public class Frequencer implements FrequencerInterface{
            A:o Hi Ho
         */
 
-        // It returns the index of the first suffix 
-        // which is equal or greater than target_start_end.                         
-        // Assuming the suffix array is created from "Hi Ho Hi Ho",                 
-        // if target_start_end is "Ho", it will return 5.                           
-        // Assuming the suffix array is created from "Hi Ho Hi Ho",                 
-        // if target_start_end is "Ho ", it will return 6.                                               
-    	
+        // It returns the index of the first suffix
+        // which is equal or greater than target_start_end.
+        // Assuming the suffix array is created from "Hi Ho Hi Ho",
+        // if target_start_end is "Ho", it will return 5.
+        // Assuming the suffix array is created from "Hi Ho Hi Ho",
+        // if target_start_end is "Ho ", it will return 6.
+
+    	// binary search
+    	int cmp;
+        int lower = 0;
+        int upper = suffixArray.length - 1;
+        while (lower <= upper) {
+            int mid = (lower + upper) / 2;
+            cmp = targetCompare(mid, start, end);
+            if (cmp == 0) {
+            	if (mid <= 0) {
+            		return mid;
+            	}
+            	if (targetCompare(mid - 1, start, end) == -1) {
+            		return mid;
+            	} else {
+            		upper = mid - 1;
+            	}
+            } else if (cmp == -1) {
+                lower = mid + 1;
+            } else {
+                upper = mid - 1;
+            }
+        }
+
+        /*
     	for (int i = 0; i < suffixArray.length; i++) {
     		if (targetCompare(i, start, end) == 0) {
 				return i;
 			}
     	}
-    	
-        return mySpace.length;         
+    	*/
+        return mySpace.length;
     }
 
     private int subByteEndIndex(int start, int end) {
         /* Example of suffix created from "Hi Ho Hi Ho"
-           0: Hi Ho                                    
-           1: Ho                                       
-           2: Ho Hi Ho                                 
-           3:Hi Ho                                     
-           4:Hi Ho Hi Ho                              
-           5:Ho                                      
-           6:Ho Hi Ho                                
-           7:i Ho                                    
-           8:i Ho Hi Ho                              
-           9:o                                       
-           A:o Hi Ho                                 
+           0: Hi Ho
+           1: Ho
+           2: Ho Hi Ho
+           3:Hi Ho
+           4:Hi Ho Hi Ho
+           5:Ho
+           6:Ho Hi Ho
+           7:i Ho
+           8:i Ho Hi Ho
+           9:o
+           A:o Hi Ho
         */
-        // It returns the index of the first suffix 
+        // It returns the index of the first suffix
         // which is greater than target_start_end; (and not equal to target_start_end)
-        // Assuming the suffix array is created from "Hi Ho Hi Ho",                   
-        // if target_start_end is "Ho", it will return 7 for "Hi Ho Hi Ho".  
-        // Assuming the suffix array is created from "Hi Ho Hi Ho",          
-        // if target_start_end is"i", it will return 9 for "Hi Ho Hi Ho".    
-                                                      
-        for (int i = suffixArray.length - 1; i >= 0; i--) {
+        // Assuming the suffix array is created from "Hi Ho Hi Ho",
+        // if target_start_end is "Ho", it will return 7 for "Hi Ho Hi Ho".
+        // Assuming the suffix array is created from "Hi Ho Hi Ho",
+        // if target_start_end is"i", it will return 9 for "Hi Ho Hi Ho".
+
+    	// binary search
+    	int cmp;
+        int lower = 0;
+        int upper = suffixArray.length - 1;
+        while (lower <= upper) {
+            int mid = (lower + upper) / 2;
+            cmp = targetCompare(mid, start, end);
+            if (cmp == 0) {
+            	if (mid >= suffixArray.length - 1) {
+            		return mid + 1;
+            	}
+            	if (targetCompare(mid + 1, start, end) == 1) {
+            		return mid + 1;
+            	} else {
+            		lower = mid + 1;
+            	}
+            } else if (cmp == -1) {
+                lower = mid + 1;
+            } else {
+                upper = mid - 1;
+            }
+        }
+
+        //System.out.println("Not Found");
+
+        /*for (int i = suffixArray.length - 1; i >= 0; i--) {
   			if (targetCompare(i, start, end) == 0) {
 				return i + 1;
 			}
-    	}
-        return mySpace.length;    
+    	}*/
+        return mySpace.length;
     }
+
 
 
     public static void main(String[] args) {
         Frequencer frequencerObject;
         try {
             frequencerObject = new Frequencer();
-            frequencerObject.setSpace("Hi Ho Hi Ho".getBytes());
+            frequencerObject.setSpace("AAA".getBytes());	// Hi Ho Hi Ho
             frequencerObject.printSuffixArray(); // you may use this line for DEBUG
-            /* Example from "Hi Ho Hi Ho"    
-               0: Hi Ho                      
-               1: Ho                         
-               2: Ho Hi Ho                   
-               3:Hi Ho                       
-               4:Hi Ho Hi Ho                 
-               5:Ho                          
-               6:Ho Hi Ho                    
-               7:i Ho                        
-               8:i Ho Hi Ho                  
-               9:o                           
-               A:o Hi Ho                     
+            /* Example from "Hi Ho Hi Ho"
+               0: Hi Ho
+               1: Ho
+               2: Ho Hi Ho
+               3:Hi Ho
+               4:Hi Ho Hi Ho
+               5:Ho
+               6:Ho Hi Ho
+               7:i Ho
+               8:i Ho Hi Ho
+               9:o
+               A:o Hi Ho
             */
 
-            frequencerObject.setTarget("H".getBytes());
-            //                                         
+            frequencerObject.setTarget("AA".getBytes());
+            //
             // ****  Please write code to check subByteStartIndex, and subByteEndIndex
             //
 
