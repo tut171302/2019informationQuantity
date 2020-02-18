@@ -349,33 +349,38 @@ public class Frequencer implements FrequencerInterface{
 
 
     public static void main(String[] args) {
-        Frequencer frequencerObject;
+    	InformationEstimator frequencerObject;
         try {
-            frequencerObject = new Frequencer();
-            frequencerObject.setSpace("AAA".getBytes());	// Hi Ho Hi Ho
-            frequencerObject.printSuffixArray(); // you may use this line for DEBUG
-            /* Example from "Hi Ho Hi Ho"
-               0: Hi Ho
-               1: Ho
-               2: Ho Hi Ho
-               3:Hi Ho
-               4:Hi Ho Hi Ho
-               5:Ho
-               6:Ho Hi Ho
-               7:i Ho
-               8:i Ho Hi Ho
-               9:o
-               A:o Hi Ho
-            */
+        	double result;
+        	long start, end;
+        	String s;
 
-            frequencerObject.setTarget("AA".getBytes());
-            //
-            // ****  Please write code to check subByteStartIndex, and subByteEndIndex
-            //
+        	for (int digit = 10; digit <= 100000; digit *= 10) {
+	        	s = "";
+	            for(int i = 0; i < digit; i++) {
+	            	if(Math.round(Math.random()) == 1) {
+	            		s += "1";
+	            	} else {
+	            		s += "0";
+	            	}
+	            }
 
-            int result = frequencerObject.frequency();
-            System.out.print("Freq = "+ result+" ");
-            if(4 == result) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+	        	//start = System.nanoTime();
+	            frequencerObject = new InformationEstimator();
+	            frequencerObject.setSpace(s.getBytes());	// Hi Ho Hi Ho
+	            frequencerObject.setTarget("01".getBytes());
+	            start = System.nanoTime();
+	            result = frequencerObject.estimation();
+	            end = System.nanoTime();
+	            System.out.print("digit = "+ digit+" \t");
+	            System.out.println("Time = " + ((double)(end - start) / 1000000.0)  + " ms");
+
+        	}
+
+
+
+
+
         }
         catch(Exception e) {
             System.out.println("STOP");
